@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Join the Waiting List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montaga&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Montaga', serif;
+      background: white;
+    }
+
+    body {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg') no-repeat center center;
+      background-size: cover;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: #000;
+      padding: 2rem;
+      width: 80%;
+      max-width: 1200px;
+    }
+
+    .subtext-top {
+      text-align: left;
+      font-size: 1.5rem;
+    }
+
+    .main-text {
+      font-size: 6rem;
+    }
+
+    .subtext-bottom {
+      text-align: right;
+      font-size: 1.5rem;
+      margin-bottom: 10rem;
+    }
+
+    input[type="email"] {
+      padding: 1rem;
+      width: 80%;
+      max-width: 800px;
+      border: 3px solid #000;
+      border-radius: 6px;
+      font-size: 1rem;
+      background-color: #FFF9EF;
+    }
+
+    .input-wrapper {
+        display: flex;
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    #email-input {
+        flex: 1;
+        padding: 1rem;
+        border: 3px solid #000;
+        border-right: none;
+        border-radius: 6px 0 0 6px;
+        font-size: 1rem;
+        background-color: #FFF9EF;
+    }
+
+    #email-input:focus {
+        /* border: none; */
+        outline: none;
+    }
+
+    #submit-button {
+        padding: 1rem;
+        border: 3px solid #000;
+        border-left: none;
+        border-radius: 0 6px 6px 0;
+        background-color: #FFF9EF;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #submit-button svg {
+        width: 20px;
+        height: 20px;
+        fill: #000;
+    }
+
+    @media (max-width: 768px) {
+      .main-text {
+        font-size: 2.5rem;
+      }
+
+      .subtext-top, .subtext-bottom {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-text {
+        font-size: 2rem;
+      }
+
+      .subtext-top, .subtext-bottom {
+        font-size: 1rem;
+      }
+
+      input[type="email"] {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="subtext-top">inhispath.com</div>
+    <div class="main-text">JOIN THE WAITING LIST</div>
+    <div class="subtext-bottom">In Jesus’ Name</div>
+
+    <form id="email-form">
+        <div class="input-wrapper">
+          <input type="email" id="email-input" placeholder="Enter your email address" required />
+          <button type="submit" id="submit-button" aria-label="Submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M15.854 7.646a.5.5 0 0 0 0 .708l-6 6a.5.5 0 0 0 .708.708L16.207 8.5l-5.646-5.646a.5.5 0 0 0-.708.708l6 6z"/>
+              <path d="M1 8a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 0-1h-13A.5.5 0 0 0 1 8z"/>
+            </svg>
+          </button>
+        </div>
+    </form>
+      
+  
+    <h2 id="success"></h2>
+  </div>
+</body>
+<script>
+  document.getElementById('email-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const emailInput = document.getElementById('email-input');
+    const email = emailInput.value.trim();
+    const success = document.getElementById("success");
+
+    if (email) {
+      try {
+        const response = await fetch('/api/submit-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        if (response.ok) {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          emailInput.value = '';
+          success.innerHTML = "Successfully joined the waiting list, Thank you!";
+        } else {
+          success.innerHTML = 'Something went wrong. Please try again.';
+        }
+      } catch (err) {
+        success.innerHTML = 'Server error. Please try again later.';
+      }
+    }
+  });
+</script>
+</html>

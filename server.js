@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 app.use(express.json());
 
-// Hidden API endpoint
 app.post('/api/submit-email', async (req, res) => {
   const { email } = req.body;
 
